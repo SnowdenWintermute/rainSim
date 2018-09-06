@@ -11,30 +11,100 @@ function getRandomArbitrary(min, max) {
   return Math.random() * (max - min) + min
 }
 
-var mouse = {
+let mouse = {
   x: undefined,
-  y: undefined
+  y: undefined,
+  down: false
 }
 
 window.addEventListener('mousemove', function(e){
   mouse.x = e.x
   mouse.y = e.y
 })
+window.addEventListener('mousedown',function(e){
+  mouse.down = true
+})
+window.addEventListener('mouseup',function(e){
+  mouse.down = false
+})
 
 //Weather properties
-var density = 2000
-var intensity = 3
-var windSpeed = 1
-var windDirection = -1
-var cloudSize = 500
-var cloudPosition = 0
+let density = 2000
+let intensity = 3
+let windSpeed = 1
+let windDirection = -1
+let cloudSize = 500
+let cloudPosition = 0
+
+//SLIDER
+function Slider(x,y,width,height,attribute){
+  let tWidth = width+40
+  let tHeight = 25
+  let tx = x-20
+  let ty = y + height/2 - tHeight/2
+  let tCenter = {
+    x: tx + tWidth/2,
+    y: ty + tHeight/2
+  }
+  this.x = x
+  this.y = y
+  this.width = width
+  this.height = height
+  this.ty = ty
+  this.tx = tx
+  this.tWidth = tWidth
+  this.tHeight= tHeight
+  this.tCenter=tCenter
+  this.draw = function(){
+    //slide bar
+    c.beginPath()
+    c.rect(this.x,this.y,this.width,this.height)
+    c.fillStyle = "darkblue"
+    c.fill()
+    //slide toggle
+    c.beginPath()
+    c.rect(this.tx,this.ty,this.tWidth,this.tHeight)
+    c.fillStyle = "grey"
+    c.fill()
+    c.beginPath()
+    c.fillStyle= "blue"
+    c.beginPath()
+    c.arc(tCenter.x,tCenter.y,2,0,Math.PI*2)
+    c.fill()
+  }
+
+  this.update = function(){
+    //if holding toggle and not out of bounds, slide it with mouse
+    if(mouse.x>=this.tx
+      && mouse.x<=this.tx+this.tWidth
+      && mouse.y>=this.ty-this.tHeight
+      && mouse.y<=this.ty+this.tHeight
+      && mouse.down
+      && this.ty>=this.y
+      && this.ty+this.tHeight<=this.y+this.height){
+
+      this.ty = mouse.y
+      tCenter.y = this.ty + this.tHeight/2
+    }
+    //if out of bounds top or bot, reset to top or bot
+    if( this.ty<this.y){
+      this.ty = this.y
+      tCenter.y = this.ty + this.tHeight/2
+    }
+    if(this.ty+this.tHeight>this.y+this.height){
+      this.ty = this.y+this.height-this.tHeight
+      tCenter.y = this.ty + this.tHeight/2
+    }
+    this.draw()
+  }
+}
 
 //backdrop
 function Sky(){
   this.draw = function(){
     c.beginPath()
     c.moveTo(0,0)
-    c.fillStyle=("rgba(195,235,255,1)")
+    c.fillStyle=("rgba(155,155,155,1)")
     c.rect(0,0,innerWidth,innerHeight)
     c.fill()
   }
@@ -58,6 +128,7 @@ function Backdrop(){
 
 bg = new Backdrop()
 sky = new Sky()
+slider = new Slider(100,100,10,200)
 
 //raindrop object
 function Raindrop(x, y, radius, speed){
@@ -83,10 +154,7 @@ function Raindrop(x, y, radius, speed){
   }
 }
 
-//cloud
-function Cloud(x,dx,speed){
 
-}
 function generateDrop(){
   let x = getRandomArbitrary(-200,innerWidth+200)
   let y = getRandomArbitrary(-60, -1000)
@@ -106,7 +174,7 @@ function updateDrops(){
   }
 }
 function changeWind(){
-  var shouldChange = false
+  let shouldChange = false
   if ((Math.random()*1000)>790) shouldChange = true
   if(shouldChange) {
     if(windSpeed >= 0 && windSpeed <= 5){
@@ -116,7 +184,7 @@ function changeWind(){
 }
 }
 //Create initial rainfall
-var raindropArray = []
+let raindropArray = []
 for(let i=0;i<density;i++){
   generateDrop()
 }
@@ -128,6 +196,7 @@ function animate() {
   updateDrops()
   changeWind()
   bg.draw()
+  slider.update()
 }
 
 animate()
