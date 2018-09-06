@@ -33,17 +33,15 @@ window.addEventListener('mouseup',function(e){
   mouse.down = false
 })
 window.addEventListener('touchstart',function(e){
-  console.log(e.touches[0].pageY)
-  console.log(e.touches[0].pageX)
+  e.stopPropagation();
   finger.down = true
-  mouse.down = true
 })
 window.addEventListener('touchmove',function(e){
   mouse.x = e.touches[0].pageX
   mouse.y = e.touches[0].pageY
 })
 window.addEventListener('touchend',function(e){
-  mouse.down=false
+  finger.down=false
 })
 
 //Weather properties
@@ -101,7 +99,7 @@ function VerticalSlider(x,y,width,height,setter){
       && mouse.x<=this.tx+this.tWidth
       && mouse.y>=this.ty-this.tHeight
       && mouse.y<=this.ty+this.tHeight
-      && mouse.down
+      && (mouse.down||finger.down)
       && this.ty>=this.y
       && this.ty+this.tHeight<=this.y+this.height){
 
@@ -114,7 +112,7 @@ function VerticalSlider(x,y,width,height,setter){
       && mouse.x<this.x+this.width
       && mouse.y>this.y
       && mouse.y<this.y+this.height
-      && mouse.down){
+      && (mouse.down||finger.down)){
         this.ty = mouse.y
         this.tCenter.y = this.ty + this.tHeight/2
         this.percent = (((this.ty)/this.height))*100
