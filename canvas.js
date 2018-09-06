@@ -128,7 +128,7 @@ function Backdrop(){
 
 bg = new Backdrop()
 sky = new Sky()
-slider = new Slider(100,100,10,200)
+slider = new Slider(50,30,10,200)
 
 //raindrop object
 function Raindrop(x, y, radius, speed){
