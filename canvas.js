@@ -33,7 +33,8 @@ window.addEventListener('mouseup',function(e){
   mouse.down = false
 })
 window.addEventListener('touchstart',function(e){
-  e.stopPropagation();
+  mouse.x = e.touches[0].pageX
+  mouse.y = e.touches[0].pageY
   finger.down = true
 })
 window.addEventListener('touchmove',function(e){
