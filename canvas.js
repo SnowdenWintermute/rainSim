@@ -16,6 +16,11 @@ let mouse = {
   y: undefined,
   down: false
 }
+let finger = {
+  x: undefined,
+  y: undefined,
+  down: false
+}
 
 window.addEventListener('mousemove', function(e){
   mouse.x = e.x
@@ -27,6 +32,19 @@ window.addEventListener('mousedown',function(e){
 window.addEventListener('mouseup',function(e){
   mouse.down = false
 })
+window.addEventListener('touchstart',function(e){
+  console.log(e.touches[0].pageY)
+  console.log(e.touches[0].pageX)
+  finger.down = true
+  mouse.down = true
+})
+window.addEventListener('touchmove',function(e){
+  mouse.x = e.touches[0].pageX
+  mouse.y = e.touches[0].pageY
+})
+window.addEventListener('touchend',function(e){
+  mouse.down=false
+})
 
 //Weather properties
 let density = 2000
@@ -37,7 +55,7 @@ let cloudSize = 500
 let cloudPosition = 0
 
 //SLIDER
-function Slider(x,y,width,height,setter){
+function VerticalSlider(x,y,width,height,setter){
   let tWidth = width
   let tHeight = 25
   let tx = x
@@ -99,8 +117,7 @@ function Slider(x,y,width,height,setter){
       && mouse.down){
         this.ty = mouse.y
         this.tCenter.y = this.ty + this.tHeight/2
-        this.percent = ((this.ty)/this.height)*100
-        console.log("ey")
+        this.percent = (((this.ty)/this.height))*100
       }
     //if out of bounds top or bot, reset to top or bot
     if(this.ty<this.y){
@@ -111,6 +128,8 @@ function Slider(x,y,width,height,setter){
       this.ty = this.y+this.height-this.tHeight
       this.tCenter.y = this.ty + this.tHeight/2
     }
+    if(this.ty+this.tHeight===this.y+this.height)this.percent=100
+    if(this.ty===this.y)this.percent=0
 
     //Set attribute based on slider position
     if(this.yPrev!==this.tCenter.y){
@@ -155,7 +174,7 @@ function setDensity(percent) {
 
 bg = new Backdrop()
 sky = new Sky()
-slider = new Slider(50,30,20,200,setDensity)
+slider = new VerticalSlider(50,30,20,200,setDensity)
 
 //raindrop object
 function Raindrop(x, y, radius, speed){
