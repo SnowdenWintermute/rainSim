@@ -37,15 +37,17 @@ let cloudSize = 500
 let cloudPosition = 0
 
 //SLIDER
-function Slider(x,y,width,height,attribute){
-  let tWidth = width+40
+function Slider(x,y,width,height,setter){
+  let tWidth = width
   let tHeight = 25
-  let tx = x-20
+  let tx = x
   let ty = y + height/2 - tHeight/2
   let tCenter = {
     x: tx + tWidth/2,
     y: ty + tHeight/2
   }
+  let percent = 50
+  let yPrev = tCenter.y
   this.x = x
   this.y = y
   this.width = width
@@ -55,6 +57,8 @@ function Slider(x,y,width,height,attribute){
   this.tWidth = tWidth
   this.tHeight= tHeight
   this.tCenter=tCenter
+  this.percent = percent
+  this.yPrev = tCenter.y
   this.draw = function(){
     //slide bar
     c.beginPath()
@@ -84,17 +88,35 @@ function Slider(x,y,width,height,attribute){
       && this.ty+this.tHeight<=this.y+this.height){
 
       this.ty = mouse.y
-      tCenter.y = this.ty + this.tHeight/2
+      this.tCenter.y = this.ty + this.tHeight/2
+      this.percent = ((this.ty)/this.height)*100
     }
+    //if click on bar, move toggle
+    if(mouse.x>this.x
+      && mouse.x<this.x+this.width
+      && mouse.y>this.y
+      && mouse.y<this.y+this.height
+      && mouse.down){
+        this.ty = mouse.y
+        this.tCenter.y = this.ty + this.tHeight/2
+        this.percent = ((this.ty)/this.height)*100
+        console.log("ey")
+      }
     //if out of bounds top or bot, reset to top or bot
-    if( this.ty<this.y){
+    if(this.ty<this.y){
       this.ty = this.y
-      tCenter.y = this.ty + this.tHeight/2
+      this.tCenter.y = this.ty + this.tHeight/2
     }
     if(this.ty+this.tHeight>this.y+this.height){
       this.ty = this.y+this.height-this.tHeight
-      tCenter.y = this.ty + this.tHeight/2
+      this.tCenter.y = this.ty + this.tHeight/2
     }
+
+    //Set attribute based on slider position
+    if(this.yPrev!==this.tCenter.y){
+      setter(this.percent)
+    }
+    this.yPrev = this.tCenter.y
     this.draw()
   }
 }
@@ -126,9 +148,14 @@ function Backdrop(){
 }
 }
 
+function setDensity(percent) {
+  density = percent*24
+  makeItRain()
+}
+
 bg = new Backdrop()
 sky = new Sky()
-slider = new Slider(50,30,10,200)
+slider = new Slider(50,30,20,200,setDensity)
 
 //raindrop object
 function Raindrop(x, y, radius, speed){
@@ -185,9 +212,14 @@ function changeWind(){
 }
 //Create initial rainfall
 let raindropArray = []
+function makeItRain(){
+  raindropArray = []
 for(let i=0;i<density;i++){
   generateDrop()
 }
+}
+
+makeItRain()
 
 function animate() {
   requestAnimationFrame(animate)
