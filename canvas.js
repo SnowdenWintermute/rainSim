@@ -14,7 +14,11 @@ function getRandomArbitrary(min, max) {
 let mouse = {
   x: undefined,
   y: undefined,
-  down: false
+  xClick: undefined,
+  yClick: undefined,
+  down: false,
+  up: true,
+  interacting: false
 }
 let finger = {
   x: undefined,
@@ -26,11 +30,17 @@ window.addEventListener('mousemove', function(e){
   mouse.x = e.x
   mouse.y = e.y
 })
+window.addEventListener('click',function(e){
+  mouse.xClick = e.x
+  mouse.yClick = e.y
+})
 window.addEventListener('mousedown',function(e){
   mouse.down = true
+  mouse.up = false
 })
 window.addEventListener('mouseup',function(e){
   mouse.down = false
+  mouse.up = true
 })
 window.addEventListener('touchstart',function(e){
   mouse.x = e.touches[0].pageX
@@ -44,107 +54,25 @@ window.addEventListener('touchmove',function(e){
 window.addEventListener('touchend',function(e){
   finger.down=false
 })
+window.addEventListener('resize',function(e){
+  makeItRain()
+})
 
 //Weather properties
 let density = 2000
-let intensity = 3
-let windSpeed = 1
-let windDirection = -1
+let intensity = 1.4
+let windSpeed = 0
+let windDirection = 1
 let cloudSize = 500
 let cloudPosition = 0
 
-//SLIDER
-function VerticalSlider(x,y,width,height,setter){
-  let tWidth = width
-  let tHeight = 25
-  let tx = x
-  let ty = y + height/2 - tHeight/2
-  let tCenter = {
-    x: tx + tWidth/2,
-    y: ty + tHeight/2
-  }
-  let percent = 50
-  let yPrev = tCenter.y
-  this.x = x
-  this.y = y
-  this.width = width
-  this.height = height
-  this.ty = ty
-  this.tx = tx
-  this.tWidth = tWidth
-  this.tHeight= tHeight
-  this.tCenter=tCenter
-  this.percent = percent
-  this.yPrev = tCenter.y
-  this.draw = function(){
-    //slide bar
-    c.beginPath()
-    c.rect(this.x,this.y,this.width,this.height)
-    c.fillStyle = "darkblue"
-    c.fill()
-    //slide toggle
-    c.beginPath()
-    c.rect(this.tx,this.ty,this.tWidth,this.tHeight)
-    c.fillStyle = "grey"
-    c.fill()
-    c.beginPath()
-    c.fillStyle= "blue"
-    c.beginPath()
-    c.arc(tCenter.x,tCenter.y,2,0,Math.PI*2)
-    c.fill()
-  }
-
-  this.update = function(){
-    //if holding toggle and not out of bounds, slide it with mouse
-    if(mouse.x>=this.tx
-      && mouse.x<=this.tx+this.tWidth
-      && mouse.y>=this.ty-this.tHeight
-      && mouse.y<=this.ty+this.tHeight
-      && (mouse.down||finger.down)
-      && this.ty>=this.y
-      && this.ty+this.tHeight<=this.y+this.height){
-
-      this.ty = mouse.y
-      this.tCenter.y = this.ty + this.tHeight/2
-      this.percent = ((this.ty)/this.height)*100
-    }
-    //if click on bar, move toggle
-    if(mouse.x>this.x
-      && mouse.x<this.x+this.width
-      && mouse.y>this.y
-      && mouse.y<this.y+this.height
-      && (mouse.down||finger.down)){
-        this.ty = mouse.y
-        this.tCenter.y = this.ty + this.tHeight/2
-        this.percent = (((this.ty)/this.height))*100
-      }
-    //if out of bounds top or bot, reset to top or bot
-    if(this.ty<this.y){
-      this.ty = this.y
-      this.tCenter.y = this.ty + this.tHeight/2
-    }
-    if(this.ty+this.tHeight>this.y+this.height){
-      this.ty = this.y+this.height-this.tHeight
-      this.tCenter.y = this.ty + this.tHeight/2
-    }
-    if(this.ty+this.tHeight===this.y+this.height)this.percent=100
-    if(this.ty===this.y)this.percent=0
-
-    //Set attribute based on slider position
-    if(this.yPrev!==this.tCenter.y){
-      setter(this.percent)
-    }
-    this.yPrev = this.tCenter.y
-    this.draw()
-  }
-}
 
 //backdrop
 function Sky(){
   this.draw = function(){
     c.beginPath()
     c.moveTo(0,0)
-    c.fillStyle=("rgba(155,155,155,1)")
+    c.fillStyle=("#5F9F9F")
     c.rect(0,0,innerWidth,innerHeight)
     c.fill()
   }
@@ -160,7 +88,7 @@ function Backdrop(){
   c.lineTo(innerWidth,innerHeight)
   c.lineTo(0,innerHeight)
   c.lineTo(0,innerHeight/4*3)
-  c.fillStyle = ("#345")
+  c.fillStyle = ("#58C")
   c.lineWidth = 15
   c.fill()
 }
@@ -170,10 +98,17 @@ function setDensity(percent) {
   density = percent*24
   makeItRain()
 }
+function setWindSpeed(percent) {
+  if(percent>50)windSpeed = percent/20
+  if(percent<50)windSpeed = (percent-100)/20 *-1
+  if(percent>50) windDirection = percent/50
+  if(percent<50) windDirection = (percent-100)/50
+}
 
 bg = new Backdrop()
 sky = new Sky()
-slider = new VerticalSlider(50,30,20,200,setDensity)
+slider = new VerticalSlider(50,30,25,240,"lightblue","darkblue","blue",setDensity)
+hSlider = new HorizontalSlider(100,200,240,30,"lightblue","darkblue","blue",setWindSpeed)
 
 //raindrop object
 function Raindrop(x, y, radius, speed){
@@ -193,8 +128,6 @@ function Raindrop(x, y, radius, speed){
     y+=speed
     this.x += windSpeed * windDirection
     x+= windSpeed * windDirection
-    //x += windSpeed * windDirection
-    //if(y > innerHeight) y = Math.random()*100
     this.draw()
   }
 }
@@ -218,16 +151,17 @@ function updateDrops(){
     }
   }
 }
-function changeWind(){
-  let shouldChange = false
-  if ((Math.random()*1000)>790) shouldChange = true
-  if(shouldChange) {
-    if(windSpeed >= 0 && windSpeed <= 5){
-    windSpeed += (Math.random()-.5)
-  }
 
-}
-}
+// function changeWind(){
+//   let shouldChange = false
+//   if ((Math.random()*1000)>790) shouldChange = true
+//   if(shouldChange) {
+//     if(windSpeed >= 0 && windSpeed <= 5){
+//     windSpeed += (Math.random()-.5)
+//   }
+// }
+// }
+
 //Create initial rainfall
 let raindropArray = []
 function makeItRain(){
@@ -244,9 +178,10 @@ function animate() {
   c.clearRect(0,0, innerWidth,innerHeight)
   sky.draw()
   updateDrops()
-  changeWind()
   bg.draw()
   slider.update()
+  hSlider.update()
 }
 
 animate()
+console.dir(slider)
