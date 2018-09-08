@@ -111,6 +111,7 @@ bg = new Backdrop()
 sky = new Sky()
 slider = new VerticalSlider(50,30,25,240,"lightblue","darkblue","blue",setDensity)
 hSlider = new HorizontalSlider(100,200,240,30,"lightblue","darkblue","blue",setWindSpeed)
+menu = new Menu()
 
 //raindrop object
 function Raindrop(x, y, radius, speed){
@@ -183,7 +184,7 @@ function animate() {
   bg.draw()
   slider.update()
   hSlider.update()
+  menu.update()
 }
 
 animate()
-console.dir(slider)
