@@ -101,7 +101,7 @@ function VerticalSlider(x,y,width,height,sColor,tColor,altColor,setter){
 }
 
 
-function HorizontalSlider(x,y,width,height,sColor,tColor,altColor,setter){
+function HorizontalSlider(x,y,width,height,sColor,tColor,altColor,setter,text){
   //Toggle position and dimensions
   let tWidth = 25
   let tHeight = height
@@ -112,6 +112,9 @@ function HorizontalSlider(x,y,width,height,sColor,tColor,altColor,setter){
   this.sColor = sColor
   this.tColor = tColor
   this.altColor = altColor
+
+  //Label Text
+  this.text = text
 
   //Assign variables to this object instance
   this.x = x
@@ -155,6 +158,12 @@ function HorizontalSlider(x,y,width,height,sColor,tColor,altColor,setter){
     c.beginPath()
     c.arc(tCenter.x,tCenter.y,2,0,Math.PI*2)
     c.fill()
+    //text
+    c.beginPath()
+    c.fillStyle = "white"
+    c.font = '20px monospace'
+    c.fillText(this.text,this.x,this.y-10)
+    c.fillText(Math.round(this.percent)+"%",this.x,this.y+this.height+20)
   }
 
   this.update = function(){

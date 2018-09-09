@@ -125,8 +125,8 @@ function setWindSpeed(percent) {
 
 bg = new Backdrop()
 sky = new Sky()
-densitySlider = new HorizontalSlider(innerWidth/8,innerHeight-innerHeight/5,240,30,"lightblue","darkblue","blue",setDensity)
-windSlider = new HorizontalSlider(innerWidth/8*5,innerHeight-innerHeight/5,240,30,"lightblue","darkblue","blue",setWindSpeed)
+densitySlider = new HorizontalSlider(innerWidth/8,innerHeight-innerHeight/5,240,30,"lightblue","darkblue","blue",setDensity,"Density")
+windSlider = new HorizontalSlider(innerWidth/8*5,innerHeight-innerHeight/5,240,30,"lightblue","darkblue","blue",setWindSpeed,"Direction/Speed")
 menu = new Menu()
 
 //raindrop object
