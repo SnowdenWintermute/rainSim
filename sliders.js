@@ -161,9 +161,9 @@ function HorizontalSlider(x,y,width,height,sColor,tColor,altColor,setter,text){
     //text
     c.beginPath()
     c.fillStyle = "white"
-    c.font = '20px monospace'
+    c.font = `${menuState.textSize}px monospace`
     c.fillText(this.text,this.x,this.y-10)
-    c.fillText(Math.round(this.percent)+"%",this.x,this.y+this.height+20)
+    c.fillText(Math.round(this.percent)+"%",this.x,this.y+this.height+menuState.textSize)
   }
 
   this.update = function(){

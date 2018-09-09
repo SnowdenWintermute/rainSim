@@ -24,7 +24,8 @@ let mouse = {
 let menuState = {
   clicked: false,
   active: false,
-  loaded: false
+  loaded: false,
+  textSize: innerWidth/30
 }
 
 let finger = {
@@ -125,8 +126,8 @@ function setWindSpeed(percent) {
 
 bg = new Backdrop()
 sky = new Sky()
-densitySlider = new HorizontalSlider(innerWidth/8,innerHeight-innerHeight/5,240,30,"lightblue","darkblue","blue",setDensity,"Density")
-windSlider = new HorizontalSlider(innerWidth/8*5,innerHeight-innerHeight/5,240,30,"lightblue","darkblue","blue",setWindSpeed,"Direction/Speed")
+densitySlider = new HorizontalSlider(innerWidth/12,innerHeight-innerHeight/5,innerWidth/12*4,30,"lightblue","darkblue","blue",setDensity,"Density")
+windSlider = new HorizontalSlider(innerWidth/12*7,innerHeight-innerHeight/5,innerWidth/12*4,30,"lightblue","darkblue","blue",setWindSpeed,"Direction/Speed")
 menu = new Menu()
 
 //raindrop object
