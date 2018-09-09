@@ -48,6 +48,17 @@ window.addEventListener('click',function(e){
   }else if(menuState.clickable&&menuState.active){
     menuState.active = false
   }
+
+  for(p of plant.growPoints){
+        if(mouse.x>p.x-p.radius
+          &&mouse.y>p.y-p.radius
+          &&mouse.x<p.x+p.radius
+          &&mouse.y<p.y+p.radius
+          ){
+            p.clicked = true
+          }
+
+  }
 })
 
 window.addEventListener('mousedown',function(e){
@@ -84,34 +95,6 @@ let windDirection = 1
 let cloudSize = 500
 let cloudPosition = 0
 
-
-//backdrop
-function Sky(){
-  this.draw = function(){
-    c.beginPath()
-    c.moveTo(0,0)
-    c.fillStyle=("#5F9F9F")
-    c.rect(0,0,innerWidth,innerHeight)
-    c.fill()
-  }
-}
-function Backdrop(){
-  this.draw = function(){
-
-  //ground
-  c.beginPath()
-  c.moveTo(0,innerHeight/4*3)
-  c.lineTo(innerWidth/2.5,innerHeight/5*3.5)
-  c.lineTo(innerWidth,innerHeight/4*3)
-  c.lineTo(innerWidth,innerHeight)
-  c.lineTo(0,innerHeight)
-  c.lineTo(0,innerHeight/4*3)
-  c.fillStyle = ("#58C")
-  c.lineWidth = 15
-  c.fill()
-}
-}
-
 function setDensity(percent) {
   density = percent*24
   makeItRain()
@@ -129,6 +112,10 @@ sky = new Sky()
 densitySlider = new HorizontalSlider(innerWidth/12,innerHeight-innerHeight/5,innerWidth/12*4,30,"lightblue","darkblue","blue",setDensity,"Density")
 windSlider = new HorizontalSlider(innerWidth/12*7,innerHeight-innerHeight/5,innerWidth/12*4,30,"lightblue","darkblue","blue",setWindSpeed,"Direction/Speed")
 menu = new Menu()
+
+//Plant Stuff
+plant = new Plant()
+plant.growPoints.push(new GrowPoint(innerWidth/2,innerHeight/4*3))
 
 //raindrop object
 function Raindrop(x, y, radius, speed){
@@ -198,7 +185,8 @@ function animate() {
   c.clearRect(0,0, innerWidth,innerHeight)
   sky.draw()
   updateDrops()
-  bg.draw()
+  bg.update()
+  plant.update()
   menu.update()
   if(menuState.loaded){
   densitySlider.update()
