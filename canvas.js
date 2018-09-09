@@ -60,14 +60,16 @@ window.addEventListener('mouseup',function(e){
 window.addEventListener('touchstart',function(e){
   mouse.x = e.touches[0].pageX
   mouse.y = e.touches[0].pageY
-  finger.down = true
+  mouse.down = true
+  mouse.up = false
 })
 window.addEventListener('touchmove',function(e){
   mouse.x = e.touches[0].pageX
   mouse.y = e.touches[0].pageY
 })
 window.addEventListener('touchend',function(e){
-  finger.down=false
+  mouse.down = false
+  mouse.up = true
 })
 window.addEventListener('resize',function(e){
   makeItRain()
