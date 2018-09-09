@@ -20,11 +20,20 @@ let mouse = {
   up: true,
   interacting: false
 }
+
+let menuState = {
+  clicked: false,
+  active: false,
+  loaded: false
+}
+
 let finger = {
   x: undefined,
   y: undefined,
   down: false
 }
+
+let menuHidden = true
 
 window.addEventListener('mousemove', function(e){
   mouse.x = e.x
@@ -33,7 +42,13 @@ window.addEventListener('mousemove', function(e){
 window.addEventListener('click',function(e){
   mouse.xClick = e.x
   mouse.yClick = e.y
+  if(menuState.clickable&&(!menuState.active)){
+    menuState.active = true
+  }else if(menuState.clickable&&menuState.active){
+    menuState.active = false
+  }
 })
+
 window.addEventListener('mousedown',function(e){
   mouse.down = true
   mouse.up = false
@@ -103,12 +118,14 @@ function setWindSpeed(percent) {
   if(percent<50)windSpeed = (percent-100)/20 *-1
   if(percent>50) windDirection = percent/50
   if(percent<50) windDirection = (percent-100)/50
+  if(percent===50) windDirection = 0
 }
 
 bg = new Backdrop()
 sky = new Sky()
-slider = new VerticalSlider(50,30,25,240,"lightblue","darkblue","blue",setDensity)
-hSlider = new HorizontalSlider(100,200,240,30,"lightblue","darkblue","blue",setWindSpeed)
+densitySlider = new HorizontalSlider(innerWidth/8,innerHeight-innerHeight/5,240,30,"lightblue","darkblue","blue",setDensity)
+windSlider = new HorizontalSlider(innerWidth/8*5,innerHeight-innerHeight/5,240,30,"lightblue","darkblue","blue",setWindSpeed)
+menu = new Menu()
 
 //raindrop object
 function Raindrop(x, y, radius, speed){
@@ -179,9 +196,11 @@ function animate() {
   sky.draw()
   updateDrops()
   bg.draw()
-  slider.update()
-  hSlider.update()
+  menu.update()
+  if(menuState.loaded){
+  densitySlider.update()
+  windSlider.update()
+}
 }
 
 animate()
-console.dir(slider)

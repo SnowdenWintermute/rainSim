@@ -1,5 +1,6 @@
 //SLIDER
 
+
 function VerticalSlider(x,y,width,height,sColor,tColor,altColor,setter){
   let tWidth = width
   let tHeight = 25
@@ -28,7 +29,7 @@ function VerticalSlider(x,y,width,height,sColor,tColor,altColor,setter){
     yMax: this.y+this.height-this.tHeight/2,
     yMin: this.y+this.tHeight/2
   }
-    this.tCenter = tCenter
+  this.tCenter = tCenter
   let percent = 50
   let yPrev = tCenter.y
   this.tCenter=tCenter
