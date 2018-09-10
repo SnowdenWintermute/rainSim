@@ -19,14 +19,17 @@ function Plant(){
   }
 }
 
-function Stick(x,y,x2,y2,girth){
+//SICK
+function Stick(x,y,x2,y2,girth,parent){
   this.x = x
   this.y = y
   this.x2 = x2
   this.y2 = y2
 
   this.girth = girth
+  this.parent = parent
 
+  //for animation of growth
   this.xfull = x
   this.yfull = y
   this.x2full = x2
@@ -35,10 +38,12 @@ function Stick(x,y,x2,y2,girth){
   this.growPoint1x = this.x-this.girth
   this.growPoint1y = this.y2+(this.y-this.y2)/2.2
   this.growPoint2x = this.x+this.girth
-  this.growPoint2y = this.y2+(this.y-this.y2)/2.4
+  this.growPoint2y = this.y2+(this.y-this.y2)/1.4
 
-  plant.growPoints.push(new GrowPoint(this.growPoint1x,this.growPoint1y))
-  plant.growPoints.push(new GrowPoint(this.growPoint2x,this.growPoint2y))
+
+  plant.growPoints.push(new GrowPoint(this.growPoint1x,this.growPoint1y,this.x-30,this.y2,"left",this.girth))
+  plant.growPoints.push(new GrowPoint(this.growPoint2x,this.growPoint2y,this.x+30,this.y2,"right",this.girth))
+
 
 
   this.draw = function(){
@@ -50,16 +55,20 @@ function Stick(x,y,x2,y2,girth){
     c.stroke()
   }
   this.update = function(){
-
     this.draw()
   }
 }
 
-function GrowPoint(x,y){
+function GrowPoint(x,y,x2,y2,d,girth,parent){
 
   this.radius = 10
   this.x = x
   this.y = y
+  this.x2 = x2
+  this.y2 = y2
+
+  this.d = d
+  this.girth = girth
 
   this.clicked = false
 
@@ -83,8 +92,21 @@ function GrowPoint(x,y){
   this.update = function(){
     this.draw()
     if(this.clicked){
-      plant.sticks.push(new Stick(this.x,this.y,this.x,this.y-100,5))
-      plant.growPoints.shift()
+      switch(true){
+        case this.d === "up":
+          plant.sticks.push(new Stick(this.x,this.y,this.x2,this.y2,this.girth))
+          break
+        case this.d ==="left":
+          plant.sticks.push(new Stick(this.x,this.y,this.x2-20,this.y2-20,this.girth))
+          break
+        case this.d ==="right":
+          plant.sticks.push(new Stick(this.x,this.y,this.x2+20,this.y2-20,this.girth))
+          break
+          default:
+      }
+      console.log(plant.growPoints.indexOf(this))
+
+      plant.growPoints.splice(plant.growPoints.indexOf(this),1)
     }
   }
 }

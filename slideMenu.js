@@ -46,12 +46,12 @@ function Menu() {
     //DRAW RECT
     c.beginPath()
     c.rect(this.rectx,this.recty,this.rectw,this.recth)
-    c.fillStyle="#49F"
+    c.fillStyle="#2e454d"
     c.fill()
 
     //DRAW TRIANGLE
     c.beginPath()
-    c.fillStyle = "orange"
+    c.fillStyle = "#49F"
     c.moveTo(this.x1,this.y1)
     c.lineTo(this.x2,this.y2)
     c.lineTo(this.x3,this.y3)

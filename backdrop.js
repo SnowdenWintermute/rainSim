@@ -3,7 +3,7 @@ function Sky(){
   this.draw = function(){
     c.beginPath()
     c.moveTo(0,0)
-    c.fillStyle=("#5F9F9F")
+    c.fillStyle=("#4e7385")
     c.rect(0,0,innerWidth,innerHeight)
     c.fill()
   }
@@ -18,7 +18,7 @@ function Backdrop(){
   c.lineTo(innerWidth,innerHeight)
   c.lineTo(0,innerHeight)
   c.lineTo(0,innerHeight/4*3)
-  c.fillStyle = ("#58C")
+  c.fillStyle = ("#40606f")
   c.lineWidth = 15
   c.fill()
 }

@@ -49,16 +49,16 @@ window.addEventListener('click',function(e){
     menuState.active = false
   }
 
-  for(p of plant.growPoints){
-        if(mouse.x>p.x-p.radius
-          &&mouse.y>p.y-p.radius
-          &&mouse.x<p.x+p.radius
-          &&mouse.y<p.y+p.radius
-          ){
-            p.clicked = true
-          }
-
-  }
+  // for(p of plant.growPoints){
+  //       if(mouse.x>p.x-p.radius
+  //         &&mouse.y>p.y-p.radius
+  //         &&mouse.x<p.x+p.radius
+  //         &&mouse.y<p.y+p.radius
+  //         ){
+  //           p.clicked = true
+  //         }
+  //
+  // }
 })
 
 window.addEventListener('mousedown',function(e){
@@ -84,6 +84,9 @@ window.addEventListener('touchend',function(e){
   mouse.up = true
 })
 window.addEventListener('resize',function(e){
+  c.clearRect(0,0, innerWidth,innerHeight)
+  canvas.width = innerWidth
+  canvas.height = innerHeight
   makeItRain()
 })
 
@@ -113,10 +116,6 @@ densitySlider = new HorizontalSlider(innerWidth/12,innerHeight-innerHeight/5,inn
 windSlider = new HorizontalSlider(innerWidth/12*7,innerHeight-innerHeight/5,innerWidth/12*4,30,"lightblue","darkblue","blue",setWindSpeed,"Direction/Speed")
 menu = new Menu()
 
-//Plant Stuff
-plant = new Plant()
-plant.growPoints.push(new GrowPoint(innerWidth/2,innerHeight/4*3))
-
 //raindrop object
 function Raindrop(x, y, radius, speed){
   this.x = x
@@ -127,7 +126,7 @@ function Raindrop(x, y, radius, speed){
     c.beginPath()
     c.arc(x, y, radius, 0, (Math.PI), true)
     c.bezierCurveTo(x-radius, y+radius*.85, x+radius, y+radius*.85, x+radius, y)
-    c.fillStyle = "rgba(20,40,60,.3)"
+    c.fillStyle = "rgba(50,150,190,.5)"
     c.fill()
   }
   this.update = function(){
@@ -141,9 +140,9 @@ function Raindrop(x, y, radius, speed){
 
 
 function generateDrop(){
-  let x = getRandomArbitrary(-200,innerWidth+200)
+  let x = getRandomArbitrary(-innerWidth/2,innerWidth+innerWidth/2)
   let y = getRandomArbitrary(-60, -1000)
-  let size = getRandomArbitrary(1,4)
+  let size = getRandomArbitrary(1,3.2)
   let speed = size * intensity
   raindropArray.push(new Raindrop(x, y, size, speed))
 }
@@ -151,7 +150,7 @@ function generateDrop(){
 function updateDrops(){
   for(drop of raindropArray){
     drop.update()
-    if(drop.y > innerHeight || drop.x > innerWidth+200 || drop.x < -200){
+    if(drop.y > innerHeight || drop.x > innerWidth+innerWidth/2 || drop.x < - innerWidth/2){
       //remove drop and create new one
       raindropArray.splice(raindropArray.indexOf(drop),1)
       generateDrop()
@@ -186,7 +185,6 @@ function animate() {
   sky.draw()
   updateDrops()
   bg.update()
-  plant.update()
   menu.update()
   if(menuState.loaded){
   densitySlider.update()
