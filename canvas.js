@@ -87,6 +87,10 @@ window.addEventListener('resize',function(e){
   c.clearRect(0,0, innerWidth,innerHeight)
   canvas.width = innerWidth
   canvas.height = innerHeight
+  densitySlider = new HorizontalSlider(innerWidth/12,innerHeight-innerHeight/5,innerWidth/12*4,30,"lightblue","darkblue","blue",setDensity,"Density")
+  windSlider = new HorizontalSlider(innerWidth/12*7,innerHeight-innerHeight/5,innerWidth/12*4,30,"lightblue","darkblue","blue",setWindSpeed,"Direction/Speed")
+  menu = new Menu()
+  menuState.textSize = innerWidth/30
   makeItRain()
 })
 
