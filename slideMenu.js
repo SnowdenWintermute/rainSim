@@ -38,9 +38,9 @@ function Menu() {
   this.recthClosed = 40
 
   this.rectxOpen = (innerWidth/12)*1
-  this.rectyOpen = (innerHeight/12)*7.5
+  this.rectyOpen = (innerHeight/12)*7
   this.rectwOpen = innerWidth/12*10
-  this.recthOpen = innerHeight/12*4
+  this.recthOpen = innerHeight/12*4.5
 
   this.draw = function(){
     //DRAW RECT

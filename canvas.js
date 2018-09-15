@@ -25,7 +25,7 @@ let menuState = {
   clicked: false,
   active: false,
   loaded: false,
-  textSize: innerWidth/30
+  textSize: innerWidth/45
 }
 
 let finger = {
@@ -48,17 +48,6 @@ window.addEventListener('click',function(e){
   }else if(menuState.clickable&&menuState.active){
     menuState.active = false
   }
-
-  // for(p of plant.growPoints){
-  //       if(mouse.x>p.x-p.radius
-  //         &&mouse.y>p.y-p.radius
-  //         &&mouse.x<p.x+p.radius
-  //         &&mouse.y<p.y+p.radius
-  //         ){
-  //           p.clicked = true
-  //         }
-  //
-  // }
 })
 
 window.addEventListener('mousedown',function(e){
@@ -87,8 +76,11 @@ window.addEventListener('resize',function(e){
   c.clearRect(0,0, innerWidth,innerHeight)
   canvas.width = innerWidth
   canvas.height = innerHeight
-  densitySlider = new HorizontalSlider(innerWidth/12,innerHeight-innerHeight/5,innerWidth/12*4,30,"lightblue","darkblue","blue",setDensity,"Density")
-  windSlider = new HorizontalSlider(innerWidth/12*7,innerHeight-innerHeight/5,innerWidth/12*4,30,"lightblue","darkblue","blue",setWindSpeed,"Direction/Speed")
+  slideWidth = innerWidth/12*4
+  densitySlider = new HorizontalSlider(innerWidth/12,innerHeight/12*8,slideWidth,slideHeight,"lightblue","darkblue","blue",setDensity,"Density")
+  windSlider = new HorizontalSlider(innerWidth/12*7,innerHeight/12*8,slideWidth,slideHeight,"lightblue","darkblue","blue",setWindSpeed,"Direction/Speed")
+  speedSlider = new HorizontalSlider(innerWidth/12*7,(innerHeight/12)*10,slideWidth,slideHeight,"lightblue","darkblue","blue",setWindSpeed,"Fall Speed")
+  sizeSlider = new HorizontalSlider(innerWidth/12,(innerHeight/12)*10,slideWidth,slideHeight,"lightblue","darkblue","blue",setWindSpeed,"Size")
   menu = new Menu()
   menuState.textSize = innerWidth/30
   makeItRain()
@@ -97,6 +89,8 @@ window.addEventListener('resize',function(e){
 //Weather properties
 let density = 2000
 let intensity = 1.4
+let fallSpeed = 1
+let sizeMod = 1
 let windSpeed = 0
 let windDirection = 1
 let cloudSize = 500
@@ -113,24 +107,37 @@ function setWindSpeed(percent) {
   if(percent<50) windDirection = (percent-100)/50
   if(percent===50) windDirection = 0
 }
+function setSpeed(percent){
+  fallSpeed = percent/10
+  makeItRain()
+}
+function setSizeMod(percent){
+  sizeMod = percent/20
+}
+
+let slideHeight = 25
+let slideWidth = innerWidth/12*4
 
 bg = new Backdrop()
 sky = new Sky()
-densitySlider = new HorizontalSlider(innerWidth/12,innerHeight-innerHeight/5,innerWidth/12*4,30,"lightblue","darkblue","blue",setDensity,"Density")
-windSlider = new HorizontalSlider(innerWidth/12*7,innerHeight-innerHeight/5,innerWidth/12*4,30,"lightblue","darkblue","blue",setWindSpeed,"Direction/Speed")
+densitySlider = new HorizontalSlider(innerWidth/12,innerHeight/12*8,slideWidth,slideHeight,"lightblue","darkblue","blue",setDensity,"Density")
+windSlider = new HorizontalSlider(innerWidth/12*7,innerHeight/12*8,slideWidth,slideHeight,"lightblue","darkblue","blue",setWindSpeed,"Direction/Speed")
+speedSlider = new HorizontalSlider(innerWidth/12*7,(innerHeight/12)*10,slideWidth,slideHeight,"lightblue","darkblue","blue",setSpeed,"Fall Speed")
+sizeSlider = new HorizontalSlider(innerWidth/12,(innerHeight/12)*10,slideWidth,slideHeight,"lightblue","darkblue","blue",setSizeMod,"Size")
 menu = new Menu()
 
 //raindrop object
-function Raindrop(x, y, radius, speed){
+function Raindrop(x, y, radius, speed, color){
   this.x = x
   this.radius = radius
   this.speed = speed
   this.y = y
+  this.color = color
   this.draw = function(){
     c.beginPath()
     c.arc(x, y, radius, 0, (Math.PI), true)
     c.bezierCurveTo(x-radius, y+radius*.85, x+radius, y+radius*.85, x+radius, y)
-    c.fillStyle = "rgba(50,150,190,.5)"
+    c.fillStyle = this.color
     c.fill()
   }
   this.update = function(){
@@ -146,9 +153,10 @@ function Raindrop(x, y, radius, speed){
 function generateDrop(){
   let x = getRandomArbitrary(-innerWidth/2,innerWidth+innerWidth/2)
   let y = getRandomArbitrary(-60, -1000)
-  let size = getRandomArbitrary(1,3.2)
-  let speed = size * intensity
-  raindropArray.push(new Raindrop(x, y, size, speed))
+  let size = getRandomArbitrary(1,3.2) * sizeMod
+  let speed = size * intensity * fallSpeed
+  let color = "rgba(50,150,190,.7)"
+  raindropArray.push(new Raindrop(x, y, size, speed,color))
 }
 
 function updateDrops(){
@@ -161,16 +169,6 @@ function updateDrops(){
     }
   }
 }
-
-// function changeWind(){
-//   let shouldChange = false
-//   if ((Math.random()*1000)>790) shouldChange = true
-//   if(shouldChange) {
-//     if(windSpeed >= 0 && windSpeed <= 5){
-//     windSpeed += (Math.random()-.5)
-//   }
-// }
-// }
 
 //Create initial rainfall
 let raindropArray = []
@@ -193,6 +191,8 @@ function animate() {
   if(menuState.loaded){
   densitySlider.update()
   windSlider.update()
+  speedSlider.update()
+  sizeSlider.update()
 }
 }
 
