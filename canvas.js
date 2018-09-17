@@ -108,8 +108,7 @@ function setWindSpeed(percent) {
   if(percent===50) windDirection = 0
 }
 function setSpeed(percent){
-  fallSpeed = percent/10
-  makeItRain()
+  fallSpeed = percent/25
 }
 function setSizeMod(percent){
   sizeMod = percent/20

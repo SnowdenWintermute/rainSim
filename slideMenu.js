@@ -3,6 +3,8 @@ function Menu() {
 
   this.active = false
 
+  this.text = "Menu"
+
   //TRIANGLE VALUES
   this.tWidth = 30
   this.x1 = innerWidth/2-this.tWidth/2
@@ -62,6 +64,12 @@ function Menu() {
     c.stroke()
     //c.fillStyle = "orange"
     c.fill()
+
+    //Draw Menu
+    c.beginPath()
+    c.fillStyle = "white"
+    c.font = `${menuState.textSize}px monospace`
+    c.fillText(this.text,this.x1-10,this.y2-20)
   }
   this.update = function(){
 
@@ -75,6 +83,7 @@ function Menu() {
         menuState.clickable = false
       }
       if(menuState.active){
+        this.text = ""
         //Animate menu rectangle to open
         if(this.rectx>=this.rectxOpen) this.rectx -=30
         if(this.recty>=this.rectyOpen) this.recty -=30
@@ -88,6 +97,7 @@ function Menu() {
         if(this.rectx<=this.rectxOpen) menuState.loaded = true
       }
       if(!menuState.active){
+        this.text = "Menu"
         //Animate menu rectangle to closed
         if(this.rectx<this.rectxClosed) this.rectx +=30
         if(this.recty<this.rectyClosed) this.recty +=30

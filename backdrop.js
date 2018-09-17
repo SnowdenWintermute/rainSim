@@ -3,7 +3,7 @@ function Sky(){
   this.draw = function(){
     c.beginPath()
     c.moveTo(0,0)
-    c.fillStyle=("#4e7385")
+    c.fillStyle=("#4e5385")
     c.rect(0,0,innerWidth,innerHeight)
     c.fill()
   }
